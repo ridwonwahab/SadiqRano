@@ -41,7 +41,7 @@ export default function Storefront() {
       const guestCart = parseCart(window.localStorage.getItem(CART_STORAGE_KEY));
       void supabase.auth.getUser().then(async ({ data, error }) => {
         if (!active) return;
-        if (error) {
+        if (error && error.name !== "AuthSessionMissingError") {
           setNotice(`Could not verify your sign-in: ${error.message}`);
           setCart(guestCart);
           setCartLoading(false);

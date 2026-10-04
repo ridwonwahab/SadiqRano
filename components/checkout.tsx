@@ -42,7 +42,9 @@ export default function Checkout() {
         supabase.auth.getUser(),
         supabase.from("products").select("id,name,size_kg,price_ngn,is_sample").eq("active", true),
       ]).then(async ([authResult, productsResult]) => {
-        if (authResult.error) setError(authResult.error.message);
+        if (authResult.error && authResult.error.name !== "AuthSessionMissingError") {
+          setError(`Could not verify your sign-in: ${authResult.error.message}`);
+        }
         setEmail(authResult.data.user?.email ?? "");
         const displayName = authResult.data.user?.user_metadata?.full_name;
         setName(typeof displayName === "string" ? displayName : "");
